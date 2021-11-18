@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script
+      src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <style>
+        .container{
+            display: flex;
+            /* flex-direction: row; */
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+
+        }
+        .main{
+            
+            border: solid black 2px;
+            height: auto;
+            width: auto;
+            padding: 30px;
+        }
+        input{
+            height: 30px;
+            width: 350px;
+        }
+        button{
+            height: 30px;
+          
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main">
+        <h1>TO DO APPLICATION</h1>
+        <input type="text" id="inputfield" placeholder="Add To Do">
+        <input type="hidden" id="saveindex">
+        <button type="button" id="btn1"><i class="fas fa-plus"></i></button>
+        <button type="button" id="btn2" style="display: none"><i class="fas fa-save"></i></button> 
+        <input type="datetime-local" id="dis">
+            <ul id="todolist">
+            </ul>
+            <p id="demo"></p>
+        <button type ="button" id="btn3">clear All</button>    
+          
+        </div>
+    </div>
+    <script>
+        let inputbox1=document.getElementById("inputfield");
+        let addtodo=document.getElementById("btn1");
+        let todolist=document.getElementById("todolist");
+        let taskdelete=document.getElementById("btn2");
+        let newarray=[];
+        let clearall=document.getElementById("btn3");
+
+        addtodo.onclick=handler;
+
+        function handler(){
+            let input=inputbox1.value;
+            console.log(input);
+            obj={};
+            let date=document.getElementById("dis").value;
+            console.log(date);
+            let newdate=date.slice(0,10);
+            console.log(newdate);
+            let newtime=date.slice(11);
+            console.log(newtime);
+            obj.todo=input;
+            obj.date=newdate;
+            obj.time=newtime;
+            newarray.push(obj);
+            console.log(newarray);
+            newtask="";
+            newarray.map(function (element,index){
+                newtask+= `<li  class="todo" data-todo="${element.todo}" >   <span>Todo is ${element.todo}  Date is ${element.date} and Time is ${element.time} <button onclick="handler3(${index})"> <i class="fas fa-edit"></i> </button> <button id="btn2" onclick="handler2()" >  <i class="fas fa-trash"></i> </button></span> </li>`;
+
+            });
+            todolist.innerHTML=newtask;
+            inputbox1.value= "";
+            let pendinglist=newarray.length;
+            console.log(pendinglist);
+            document.getElementById("demo").innerHTML=`You have ${pendinglist}  pending Todo List`;
+        }
+
+      
+function handler2(){  
+        document.getElementById("todolist").addEventListener('click',(e) =>{
+            console.log("Child Clicked");
+            click= e.target.closest("li").dataset.todo;
+            console.log(click);
+            let newtask2="";
+            
+            
+            newarray=newarray.filter(function(element,index){
+                   if(element.todo==click)
+                        return false;
+                    return true;
+                })
+    //  console.log(newarray2);
+     newarray.forEach(function(element,index){
+                                 newtask2+= `<li data-todo="${element.todo}" > <span> Todo is ${element.todo} Date is ${element.date} and time is ${element.time } <button onclick="handler3(${index})"> <i class="fas fa-edit"></i> </button> <button id="btn2" onclick="handler2()" >   <i class="fas fa-trash"></i> </button></span> </li>`;
+                })
+                todolist.innerHTML= newtask2;
+
+                let pendinglist2=newarray.length;
+                document.getElementById("demo").innerHTML=`You have ${pendinglist2}  pending Todo List`; 
+
+        })
+    } 
+
+    function handler3(index){
+        let a=newarray;
+        console.log(newarray);
+        let saveindex=document.getElementById("saveindex");
+        saveindex.value=index;
+        let addtodo=document.getElementById("btn1");
+        let savetask=document.getElementById("btn2");
+        document.getElementById("todolist").addEventListener("click",(e) => {
+            console.log("child clikced");
+            click=e.target.closest("li").dataset.todo;
+            console.log(click);
+            inputbox1.value=click;
+            addtodo.style.display="none";
+            savetask.style.display="block";
+           
+        });
+            
+        savetask.addEventListener("click",function(){
+            let newarray2=[];
+            let addedtask=inputbox1.value;
+            console.log(addedtask);
+        saveindex=document.getElementById("saveindex").value;
+        console.log(saveindex);
+        obj={};
+            let date=document.getElementById("dis").value;
+            let newdate=date.slice(0,10);
+            let newtime=date.slice(11);
+            obj.todo=addedtask;
+            obj.date=newdate;
+            obj.time=newtime;
+            // newarray2.push(obj);
+            console.log(obj);
+            // delete newarray[saveindex];
+            // newarray.push(obj);
+            // console.log(newarray);
+            // newarray.splice(saveindex,1,obj);
+            console.log(newarray);
+            newtask3="";
+
+            newarray[saveindex].todo=addedtask;
+            newarray[saveindex].date=newdate;
+            newarray[saveindex].time=newtime;
+        
+        //    console.log(newarray);
+
+
+            newarray.forEach(function(element){
+                                 newtask3+= `<li data-todo="${element.todo}" > <span> Todo is ${element.todo} Date is ${element.date} and time is ${element.time } <button onclick="handler3(${index})"> <i class="fas fa-edit"></i> </button> <button id="btn2" onclick="handler2()" > <i class="fas fa-trash"></i> </button> <span> </li>`;
+                })
+                todolist.innerHTML= newtask3;
+                // inputbox1.value="";
+
+                addtodo.style.display="block";
+                savetask.style.display="none"; 
+        })
+        
+    }
+
+    clearall.onclick=clrall;
+
+        function clrall(){
+            newarray=[];
+            console.log(newarray);
+            document.getElementById("todolist").innerHTML=newarray;
+            let pendinglist1=newarray.length;
+            document.getElementById("demo").innerHTML=`You have ${pendinglist1} pending Todo List`;
+            }
+
+
+    
+            
+
+
+    </script>
+
+</body>
+</html>
